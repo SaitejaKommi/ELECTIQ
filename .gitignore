@@ -1,0 +1,46 @@
+# Environment & Secrets
+.env
+*.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node / Frontend tools
+node_modules/
+.npm
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.suo
+*.user
+
+# Logs
+*.log
+logs/
+
+# Google Cloud
+*.json
+!.env.example
+
+# Docker
+.dockerignore
