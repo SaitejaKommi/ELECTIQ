@@ -21,7 +21,7 @@ async function startQuiz() {
     container.innerHTML = '<div class="spinner"></div><p style="text-align:center;">Generating quiz...</p>';
     
     try {
-        const response = await fetch('/api/quiz/');
+        const response = await fetch(`${API_BASE_URL}/api/quiz/`);
         if (!response.ok) throw new Error("Failed to fetch quiz");
         
         quizData = await response.json();
@@ -121,7 +121,7 @@ async function showResults() {
     const email = getUserEmail();
     if (email) {
         try {
-            await fetch('/api/quiz/score', {
+            await fetch(`${API_BASE_URL}/api/quiz/score`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, score, total: quizData.length })

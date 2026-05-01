@@ -56,7 +56,7 @@ async function translateDynamicText(text, targetLang) {
     if (targetLang === 'en' || !text) return text;
     
     try {
-        const response = await fetch('/api/translate/', {
+        const response = await fetch(`${API_BASE_URL}/api/translate/`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text, target_language: targetLang })

@@ -26,8 +26,8 @@ def create_app(test_config=None):
         app.config['CACHE_TYPE'] = 'SimpleCache'
         app.config['CACHE_DEFAULT_TIMEOUT'] = 600
         
-    # Enable CORS
-    CORS(app)
+    # Enable CORS for Vercel and localhost
+    CORS(app, resources={r"/api/*": {"origins": [r"https://.*\.vercel\.app", r"http://localhost:.*"]}})
     
     # Initialize Rate Limiter
     limiter.init_app(app)

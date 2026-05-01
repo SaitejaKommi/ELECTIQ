@@ -60,6 +60,18 @@
 6. Start the server: `python backend/app.py`
 7. Access the application at `http://localhost:5000`
 
+## Deployment
+- **Backend hosted on Render** (free tier)
+- **Frontend hosted on Vercel** (free tier)
+
+### Setting Environment Variables on Render
+When deploying the backend to Render, you must manually add the following environment variables in the Render Dashboard (under Environment):
+- `GEMINI_API_KEY`
+- `MONGODB_URI`
+- `NEWS_API_KEY`
+- `FLASK_SECRET_KEY`
+- `FLASK_ENV` (set to `production`)
+
 ## Environment Variables
 Refer to `.env.example` for required variables:
 - `MONGODB_URI`

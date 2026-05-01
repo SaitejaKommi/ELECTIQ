@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessageToUI('model', '<div class="spinner" style="width:20px;height:20px;margin:0;"></div>', loadingId);
 
         try {
-            const response = await fetch('/api/chat/', {
+            const response = await fetch(`${API_BASE_URL}/api/chat/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, message })

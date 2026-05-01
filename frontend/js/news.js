@@ -2,7 +2,7 @@ window.initNews = async function() {
     const container = document.getElementById('news-container');
     
     try {
-        const response = await fetch('/api/news/');
+        const response = await fetch(`${API_BASE_URL}/api/news/`);
         if (!response.ok) throw new Error('Failed to fetch news');
         
         const articles = await response.json();
