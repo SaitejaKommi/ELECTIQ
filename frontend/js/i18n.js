@@ -57,6 +57,14 @@ function setLanguage(lang) {
     if (!i18nDictionary[lang]) return;
     currentLanguage = lang;
     
+    // Log Google Analytics event
+    if (typeof gtag === 'function') {
+        gtag('event', 'language_changed', {
+            'event_category': 'Preferences',
+            'event_label': lang
+        });
+    }
+    
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (i18nDictionary[lang][key]) {

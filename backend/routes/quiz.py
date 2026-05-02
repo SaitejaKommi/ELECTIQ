@@ -5,7 +5,7 @@ Handles generation of quizzes and score saving.
 import json
 from flask import Blueprint, jsonify, request
 from backend.services.gemini_service import generate_quiz
-from backend.services.db_service import db_service
+from backend.services.firebase_service import save_quiz_score
 from backend.utils.sanitizer import sanitize_input
 from backend.utils.rate_limiter import limiter
 from backend.utils.cache import cache
@@ -56,5 +56,5 @@ def save_score():
     except ValueError:
         return jsonify({"error": "Invalid score format"}), 400
     
-    db_service.save_quiz_score(email, score, total)
+    save_quiz_score(email, score, total)
     return jsonify({"message": "Score saved successfully"}), 200

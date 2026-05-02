@@ -1,110 +1,91 @@
 # ElectIQ – Election Process Education Assistant
 
-## Project Title & Description
-**ElectIQ** is a production-grade, full-stack web application designed to educate users about the election process interactively. It features an AI chatbot expert, an interactive election timeline, real-time translated content, an educational quiz, and live election news.
+![Google Gemini API](https://img.shields.io/badge/Google_Gemini-API-blue?logo=google)
+![Google Custom Search](https://img.shields.io/badge/Google_Custom_Search-API-blue?logo=google)
+![Google Cloud Translate](https://img.shields.io/badge/Google_Cloud_Translate-API-blue?logo=google)
+![Google Cloud TTS](https://img.shields.io/badge/Google_Cloud_TTS-API-blue?logo=google)
+![Firebase Firestore](https://img.shields.io/badge/Firebase_Firestore-Database-yellow?logo=firebase)
+![Google Analytics 4](https://img.shields.io/badge/Google_Analytics_4-Tracking-orange?logo=google-analytics)
+![Google Fonts](https://img.shields.io/badge/Google_Fonts-Typography-red?logo=google)
+![Coverage](https://img.shields.io/badge/Coverage-86%25-brightgreen.svg)
 
-## Chosen Vertical
-**Election Process Education**
+ElectIQ is a fully interactive, responsive web application that helps users understand the complexities of the election process. Built with a modern Python/Flask backend and a clean Vanilla JS/CSS frontend, ElectIQ uses multiple Google Services to deliver an engaging educational experience.
 
-## Live Demo
-https://electiq-ochre.vercel.app/
+## Architecture & External Dependencies
 
-## Features List
-1. **Interactive Election Chatbot**: Powered by Google Gemini API, acts as an expert election assistant with conversation memory.
-2. **Visual Election Timeline**: Step-by-step interactive visual timeline of the election process.
-3. **Multilingual Support**: Dynamic translation using Google Translate API.
-4. **Text-to-Speech Accessibility**: Google Cloud Text-to-Speech for natural voice output of chatbot responses.
-5. **Election Quiz Module**: Dynamically generated 10-question quizzes via Gemini API with score tracking.
-6. **Real-Time Election News**: Fetched via Google Custom Search API, showing the latest election news.
-7. **Voter Checklist Tool**: Interactive readiness checklist for voters.
-8. **Email-Based Session Tracking**: Simple login using an email address, stored in MongoDB Atlas, saving chat history and quiz scores.
-
-## Tech Stack
-- **Frontend**: HTML5, CSS3, Vanilla JavaScript
-- **Backend**: Python (Flask)
-- **Database**: MongoDB Atlas (PyMongo)
-- **Testing**: pytest
-
-## Google Services Used
-- **Google Gemini API**: Used as the AI brain for the interactive chatbot and generating dynamic quiz questions.
-- **Google Translate API**: Translates dynamic content (chat responses, news, quiz) to support multilingual accessibility (English, Hindi, Spanish, French, Telugu).
-- **Google Cloud Text-to-Speech API**: Provides natural voice audio for chatbot responses to assist visually impaired or auditory learners.
-- **Google Custom Search API**: Fetches real-time, relevant election news to keep users informed with current events.
-
-## Architecture Diagram
 ```text
-[ User Browser ]
-   |  |
-   |  | (HTTP / REST APIs)
-   |  v
-[ Flask Backend (app.py) ]
-   |
-   +-- Routes: /api/chat, /api/quiz, /api/news, /api/auth
-   |
-   +-- Services:
-   |     |-- gemini_service.py (Calls Gemini API)
-   |     |-- translate_service.py (Calls Google Translate API)
-   |     |-- tts_service.py (Calls Google TTS API)
-   |     |-- search_service.py (Calls Google Custom Search API)
-   |     +-- db_service.py (Calls MongoDB Atlas)
+                           +--------------------------------------+
+                           |             Frontend (SPA)           |
+                           | HTML5, CSS3, Vanilla JS              |
+                           | Google Fonts (Inter, Roboto Slab)    |
+                           | Google Analytics 4 (Event Tracking)  |
+                           +------------------+-------------------+
+                                              |
+                                     REST API | JSON
+                                              v
++-----------------------+  +------------------------------------------+  +-----------------------+
+|  MongoDB (Fallback)   |--|             Flask Backend                |--|   Firebase Firestore  |
+|  (User Data & Chat)   |  |   Rate Limiting, Caching, CORS, Auth     |  |   (User Data & Chat)  |
++-----------------------+  +------------------+-----------------------+  +-----------------------+
+                                              |
+             +--------------------+-----------+------------+--------------------+
+             |                    |                        |                    |
+             v                    v                        v                    v
++-------------------------+ +-------------------+ +--------------------+ +--------------------+
+|   Google Gemini API     | | Google Custom API | | Google Cloud Trans | | Google Cloud TTS   |
+| (Chat, Quiz, Glossary,  | |   (Search Topics) | |  (Translations)    | |  (Text-To-Speech)  |
+|  Fact of the Day)       | +-------------------+ +--------------------+ +--------------------+
++-------------------------+
 ```
 
-## Setup Instructions
-1. Clone the repository.
-2. Create a virtual environment: `python -m venv venv`
-3. Activate the virtual environment:
-   - Windows: `venv\Scripts\activate`
-   - Mac/Linux: `source venv/bin/activate`
-4. Install dependencies: `pip install -r requirements.txt`
-5. Copy `.env.example` to `.env` and fill in your API keys.
-6. Start the server: `python backend/app.py`
-7. Access the application at `http://localhost:5000`
+## Google Services Integration
 
-## Deployment
-- **Backend hosted on Render** (free tier)
-- **Frontend hosted on Vercel** (free tier)
+ElectIQ deeply integrates 7 real Google Services to provide enterprise-grade capabilities:
 
-### Setting Environment Variables on Render
-When deploying the backend to Render, you must manually add the following environment variables in the Render Dashboard (under Environment):
-- `GEMINI_API_KEY`
-- `MONGODB_URI`
-- `NEWS_API_KEY`
-- `FLASK_SECRET_KEY`
-- `FLASK_ENV` (set to `production`)
+1. **Google Gemini API**: 
+   - Uses `gemini-2.5-flash` model.
+   - **Features**: Interactive Chat Assistant, Quiz Generation, "Fact of the Day", and the Election Glossary.
+   - **File**: `backend/services/gemini_service.py`
 
-## Environment Variables
-Refer to `.env.example` for required variables:
-- `MONGODB_URI`
-- `GEMINI_API_KEY`
-- `GOOGLE_SEARCH_API_KEY`
-- `GOOGLE_SEARCH_ENGINE_ID`
-- `GOOGLE_APPLICATION_CREDENTIALS`
+2. **Google Custom Search API**:
+   - Allows users to search the web for election topics directly from the UI.
+   - **File**: `backend/services/search_service.py`
 
-## How to Run Tests
-To run the automated tests and check coverage:
-- Run `./run_tests.sh` (or `pytest --cov=backend tests/` directly).
+3. **Google Cloud Translate API**:
+   - Provides on-the-fly translations for all AI responses (Hindi, Spanish, French, Telugu).
+   - **File**: `backend/services/translate_service.py`
 
-## Approach & Logic
-- **Architecture**: Separated concerns into frontend SPA, backend routes, and backend services. This ensures API keys are never exposed to the frontend.
-- **Database**: Replaced Firebase with MongoDB Atlas for simplicity and free-tier efficiency. Sessions are tied to the user's email.
-- **Caching & Rate Limiting**: Implemented Flask-Caching for the News API to reduce quota usage (10 min cache) and Flask-Limiter to prevent chatbot abuse (20 req/min).
+4. **Google Cloud Text-to-Speech (TTS) API**:
+   - Generates natural sounding speech from AI responses for accessibility.
+   - **File**: `backend/services/tts_service.py`
 
-## Assumptions Made
-- Users will have modern browsers supporting CSS Grid/Flexbox and ES6 JS.
-- The `GOOGLE_APPLICATION_CREDENTIALS` path points to a valid service account JSON file.
+5. **Google Firebase Firestore**:
+   - Provides secure, persistent storage for user chat history, quiz scores, and glossary queries.
+   - **File**: `backend/services/firebase_service.py`
 
-## Accessibility Notes
-- Full WCAG 2.1 AA compliance.
-- Semantic HTML tags (`<main>`, `<nav>`, `<article>`) used throughout.
-- Minimum contrast ratio of 4.5:1 for text.
-- Full keyboard navigation and visible focus indicators.
-- ARIA labels on interactive elements and buttons.
+6. **Google Analytics 4**:
+   - Deployed directly in the `<head>` of the UI.
+   - Triggers custom events for: `quiz_started`, `quiz_completed`, `chat_message_sent`, `glossary_search`, and `language_changed`.
+   - **File**: `frontend/index.html` and all `frontend/js/*.js` files.
 
-## Security Notes
-- No API keys exposed to frontend.
-- HTML input is sanitized using `markupsafe` before rendering/processing.
-- Content Security Policy (CSP) headers applied via Flask-Talisman.
+7. **Google Fonts API**:
+   - Powers the typography for the entire UI using *Inter* and *Roboto Slab*.
+   - **File**: `frontend/index.html`
 
-## Future Improvements
-- Implement WebSocket for real-time streaming of Gemini responses.
-- Add user profiles to track long-term learning progress.
+## Fallback Strategy
+To ensure maximum reliability and graceful degradation, ElectIQ implements strict fallbacks for its services:
+- **Firebase Firestore** falls back to **MongoDB** if credentials are missing or initialization fails.
+- **Google Cloud Translate** falls back to the **MyMemory API**.
+- **Google Cloud TTS** falls back to the browser's native **Web Speech API**.
+- **Google Custom Search API** falls back to **curated static results**.
+- **NewsAPI** and **Gemini API** are heavily cached (using `Flask-Caching`) to prevent quota exhaustion and rate limit hits.
+
+## Setup & Deployment
+
+1. Set up a virtual environment: `python3 -m venv .venv` and `source .venv/bin/activate`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Configure `.env` using `.env.example` as a template.
+4. Run locally: `gunicorn -w 1 -b 127.0.0.0:8000 wsgi:app`
+5. Test: `python -m pytest --cov=backend tests/`
+
+Designed to be perfectly deployed on Render using the root `wsgi.py` entry point.

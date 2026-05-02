@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
  * Fetches quiz data from the backend and resets the UI state.
  */
 async function startQuiz() {
+    // Log Google Analytics event
+    if (typeof gtag === 'function') {
+        gtag('event', 'quiz_started', {
+            'event_category': 'Engagement'
+        });
+    }
+
     document.getElementById('quiz-intro').classList.add('hidden');
     document.getElementById('quiz-results').classList.add('hidden');
     
@@ -143,6 +150,14 @@ async function showResults() {
     document.getElementById('quiz-results').classList.remove('hidden');
     document.getElementById('final-score').textContent = score;
     
+    // Log Google Analytics event
+    if (typeof gtag === 'function') {
+        gtag('event', 'quiz_completed', {
+            'event_category': 'Engagement',
+            'value': score
+        });
+    }
+
     // Save score to DB
     const email = getUserEmail();
     if (email) {

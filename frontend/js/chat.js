@@ -38,6 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = getUserEmail();
         if (!email) return;
 
+        // Log Google Analytics event
+        if (typeof gtag === 'function') {
+            gtag('event', 'chat_message_sent', {
+                'event_category': 'Engagement'
+            });
+        }
+
         // Add user message to UI
         addMessageToUI('user', message);
         
@@ -108,21 +115,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let synth = window.speechSynthesis;
 let currentUtterance = null;
+let currentAudio = null;
 
 /**
- * Uses the Web Speech API to read text aloud.
+ * Uses Google Cloud TTS via backend, falls back to Web Speech API.
  * Acts as a toggle (cancels speaking if already speaking).
  * @param {string} text - The text to speak.
  */
 async function playTTS(text) {
-    if (synth.speaking) {
-        synth.cancel();
-        return; // act as a toggle
+    // Check if audio is playing from Google TTS
+    if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        return;
     }
     
-    if (text !== '') {
-        currentUtterance = new SpeechSynthesisUtterance(text);
-        currentUtterance.lang = currentLanguage === 'en' ? 'en-US' : (currentLanguage + '-' + currentLanguage.toUpperCase());
-        synth.speak(currentUtterance);
+    // Check if speaking from Web Speech API
+    if (synth.speaking) {
+        synth.cancel();
+        return;
     }
+    
+    if (!text) return;
+    
+    try {
+        const response = await fetch('/api/tts/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, language_code: currentLanguage })
+        });
+        
+        const data = await response.json();
+        if (response.ok && data.audioContent) {
+            // Play Google TTS audio
+            const audioSrc = 'data:audio/mp3;base64,' + data.audioContent;
+            currentAudio = new Audio(audioSrc);
+            currentAudio.play();
+            return;
+        }
+    } catch (e) {
+        console.warn("Google TTS failed, falling back to Web Speech API", e);
+    }
+    
+    // Fallback to Web Speech API
+    currentUtterance = new SpeechSynthesisUtterance(text);
+    currentUtterance.lang = currentLanguage === 'en' ? 'en-US' : (currentLanguage + '-' + currentLanguage.toUpperCase());
+    synth.speak(currentUtterance);
 }

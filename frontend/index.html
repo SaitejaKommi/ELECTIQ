@@ -5,8 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ElectIQ – Election Process Education Assistant</title>
     <meta name="description" content="Learn about the election process interactively with ElectIQ.">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
     <link rel="stylesheet" href="css/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -14,7 +23,7 @@
     <!-- Login Overlay -->
     <div id="login-overlay" class="overlay active" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <div class="login-card">
-            <h1 id="login-title">Welcome to ElectIQ</h1>
+            <h1 id="login-title" style="font-family: 'Roboto Slab', serif;">Welcome to ElectIQ</h1>
             <p>Your personal election process guide.</p>
             <form id="login-form">
                 <label for="email-input">Email Address</label>
@@ -28,7 +37,7 @@
     <!-- Main Application -->
     <div id="app-container" class="hidden">
         <header role="banner">
-            <div class="logo" aria-label="ElectIQ Logo">
+            <div class="logo" aria-label="ElectIQ Logo" style="font-family: 'Roboto Slab', serif;">
                 <span class="logo-icon" aria-hidden="true">🗳️</span> ElectIQ
             </div>
             <nav aria-label="Main Navigation">
@@ -55,7 +64,7 @@
             <div class="grid-layout">
                 <!-- Left Column: Chatbot -->
                 <section class="card chat-section" aria-labelledby="chat-heading">
-                    <h2 id="chat-heading" data-i18n="chat_heading">AI Election Assistant</h2>
+                    <h2 id="chat-heading" data-i18n="chat_heading" style="font-family: 'Roboto Slab', serif;">AI Election Assistant</h2>
                     <div id="chat-history" class="chat-history" role="log" aria-live="polite" aria-atomic="false">
                         <div class="message model">
                             <p>Hi there! I'm ElectIQ, your election education expert. What would you like to know about the election process?</p>
@@ -70,9 +79,29 @@
 
                 <!-- Right Column: Features -->
                 <div class="features-column">
+                    <!-- Search Section -->
+                    <section class="card search-section" aria-labelledby="search-heading">
+                        <h2 id="search-heading" style="font-family: 'Roboto Slab', serif;">Search Election Topics</h2>
+                        <form id="search-form" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" id="search-input" placeholder="Search Google..." required style="flex-grow: 1; padding: 8px;">
+                            <button type="submit" class="btn primary">Search</button>
+                        </form>
+                        <div id="search-results" aria-live="polite"></div>
+                    </section>
+
+                    <!-- Glossary Section -->
+                    <section class="card glossary-section" aria-labelledby="glossary-heading">
+                        <h2 id="glossary-heading" style="font-family: 'Roboto Slab', serif;">Gemini Election Glossary</h2>
+                        <form id="glossary-form" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="text" id="glossary-input" placeholder="Enter an election term..." required style="flex-grow: 1; padding: 8px;">
+                            <button type="submit" class="btn primary">Explain</button>
+                        </form>
+                        <div id="glossary-result" aria-live="polite" class="message model hidden"></div>
+                    </section>
+
                     <!-- Timeline Section -->
                     <section class="card timeline-section" aria-labelledby="timeline-heading">
-                        <h2 id="timeline-heading" data-i18n="timeline_heading">Election Timeline</h2>
+                        <h2 id="timeline-heading" data-i18n="timeline_heading" style="font-family: 'Roboto Slab', serif;">Election Timeline</h2>
                         <div class="timeline" id="timeline-container">
                             <!-- Populated by JS -->
                         </div>
@@ -85,7 +114,7 @@
 
                     <!-- News Section -->
                     <section class="card news-section" aria-labelledby="news-heading">
-                        <h2 id="news-heading" data-i18n="news_heading">Latest Election News</h2>
+                        <h2 id="news-heading" data-i18n="news_heading" style="font-family: 'Roboto Slab', serif;">Latest Election News</h2>
                         <div id="news-container" class="news-container" aria-live="polite">
                             <div class="spinner" aria-label="Loading news"></div>
                         </div>
@@ -112,13 +141,13 @@
                         </div>
                         <div id="quiz-container" class="hidden" aria-live="polite">
                             <div id="quiz-progress" aria-atomic="true">Question <span id="q-num">1</span> of 10</div>
-                            <h3 id="quiz-question">Loading...</h3>
+                            <h3 id="quiz-question" style="font-family: 'Roboto Slab', serif;">Loading...</h3>
                             <div id="quiz-options" class="quiz-options" role="radiogroup" aria-labelledby="quiz-question"></div>
                             <div id="quiz-feedback" class="hidden" role="alert"></div>
                             <button id="next-q-btn" class="btn primary hidden" aria-label="Next Question">Next Question</button>
                         </div>
                         <div id="quiz-results" class="hidden" aria-live="polite">
-                            <h3 data-i18n="quiz_complete">Quiz Complete!</h3>
+                            <h3 data-i18n="quiz_complete" style="font-family: 'Roboto Slab', serif;">Quiz Complete!</h3>
                             <p>Your Score: <span id="final-score">0</span>/10</p>
                             <button id="restart-quiz-btn" class="btn outline" aria-label="Retake the quiz">Retake Quiz</button>
                         </div>
@@ -142,5 +171,6 @@
     <script src="js/checklist.js"></script>
     <script src="js/quiz.js"></script>
     <script src="js/app.js"></script>
+    <script src="js/features.js"></script>
 </body>
 </html>
