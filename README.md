@@ -7,7 +7,7 @@
 **Election Process Education**
 
 ## Live Demo
-[Live Demo URL Placeholder]
+https://electiq-ochre.vercel.app/
 
 ## Features List
 1. **Interactive Election Chatbot**: Powered by Google Gemini API, acts as an expert election assistant with conversation memory.
