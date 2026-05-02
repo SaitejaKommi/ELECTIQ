@@ -1,3 +1,7 @@
+/**
+ * Data structure for the voter checklist items.
+ * @type {Array<{title: string, desc: string}>}
+ */
 const checklistData = [
     { title: "Check Eligibility", desc: "Ensure you meet the age and citizenship requirements to vote in your jurisdiction." },
     { title: "Register to Vote", desc: "Complete your voter registration before the deadline. You may need valid ID." },
@@ -7,6 +11,11 @@ const checklistData = [
     { title: "Cast Your Vote", desc: "Bring required ID, follow instructions, and cast your vote on election day!" }
 ];
 
+/**
+ * Initializes the Voter Checklist UI.
+ * Iterates through the checklist items, translates them dynamically,
+ * and renders them as interactive details/summary HTML elements.
+ */
 window.initChecklist = async function() {
     const container = document.getElementById('checklist-container');
     container.innerHTML = '';

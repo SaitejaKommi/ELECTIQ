@@ -1,3 +1,7 @@
+/**
+ * Dictionary for static UI translations.
+ * @type {Object<string, Object<string, string>>}
+ */
 const i18nDictionary = {
     en: {
         chat_heading: "AI Election Assistant",
@@ -36,13 +40,23 @@ const i18nDictionary = {
     }
 };
 
+/** @type {string} */
 let currentLanguage = 'en';
 
+/**
+ * Memory cache for dynamic translations to minimize redundant API calls.
+ * @type {Map<string, string>}
+ */
+const translationCache = new Map();
+
+/**
+ * Updates the static UI elements with translated strings from the dictionary.
+ * @param {string} lang - Target language code (e.g., 'es').
+ */
 function setLanguage(lang) {
     if (!i18nDictionary[lang]) return;
     currentLanguage = lang;
     
-    // Update static UI texts
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (i18nDictionary[lang][key]) {
@@ -51,9 +65,20 @@ function setLanguage(lang) {
     });
 }
 
-// Function to translate dynamic content using the backend API
+/**
+ * Translates dynamic content using the backend API.
+ * Uses a JS Map to cache translations and minimize redundant API calls.
+ * @param {string} text - Original text to translate.
+ * @param {string} targetLang - Target language code.
+ * @returns {Promise<string>} Translated text.
+ */
 async function translateDynamicText(text, targetLang) {
     if (targetLang === 'en' || !text) return text;
+    
+    const cacheKey = `${targetLang}_${text}`;
+    if (translationCache.has(cacheKey)) {
+        return translationCache.get(cacheKey);
+    }
     
     try {
         const response = await fetch(`${API_BASE_URL}/api/translate/`, {
@@ -65,6 +90,7 @@ async function translateDynamicText(text, targetLang) {
         if (!response.ok) throw new Error("Translation failed");
         
         const data = await response.json();
+        translationCache.set(cacheKey, data.translatedText);
         return data.translatedText;
     } catch (error) {
         console.error(error);

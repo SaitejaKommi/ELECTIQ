@@ -1,3 +1,7 @@
+/**
+ * Static data for the election timeline.
+ * @type {Array<{title: string, desc: string}>}
+ */
 const timelineData = [
     { title: "Announcement", desc: "The Election Commission announces the schedule for the elections, bringing the Model Code of Conduct into effect." },
     { title: "Nomination", desc: "Candidates file their nomination papers, which are then scrutinized. They have a window to withdraw their nominations." },
@@ -8,6 +12,10 @@ const timelineData = [
     { title: "Inauguration", desc: "Elected officials take their oath of office and form the new government." }
 ];
 
+/**
+ * Initializes the timeline UI component.
+ * Iterates through timeline steps, translates them, and renders interactive nodes.
+ */
 window.initTimeline = async function() {
     const container = document.getElementById('timeline-container');
     container.innerHTML = '';
@@ -22,24 +30,42 @@ window.initTimeline = async function() {
         const div = document.createElement('div');
         div.className = 'timeline-item';
         div.tabIndex = 0; // Accessible
+        div.setAttribute('role', 'button');
+        div.setAttribute('aria-expanded', 'false');
         div.innerHTML = `<h3>${transTitle}</h3>`;
         
-        div.addEventListener('click', () => showPopup(transTitle, transDesc));
+        div.addEventListener('click', () => {
+            div.setAttribute('aria-expanded', 'true');
+            showPopup(transTitle, transDesc);
+        });
+        
         div.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') showPopup(transTitle, transDesc);
+            if (e.key === 'Enter') {
+                div.setAttribute('aria-expanded', 'true');
+                showPopup(transTitle, transDesc);
+            }
         });
         
         container.appendChild(div);
     }
 };
 
+/**
+ * Displays a popup modal with more details about a timeline step.
+ * @param {string} title - Timeline step title
+ * @param {string} desc - Timeline step description
+ */
 function showPopup(title, desc) {
     const popup = document.getElementById('timeline-popup');
     document.getElementById('popup-title').textContent = title;
     document.getElementById('popup-desc').textContent = desc;
     popup.classList.remove('hidden');
+    document.getElementById('close-popup').focus(); // A11y focus management
 }
 
+/**
+ * Closes the timeline details popup.
+ */
 document.getElementById('close-popup')?.addEventListener('click', () => {
     document.getElementById('timeline-popup').classList.add('hidden');
 });

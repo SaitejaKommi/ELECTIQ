@@ -1,7 +1,20 @@
+"""
+Translation service module for the ElectIQ backend.
+Handles translation of text via MyMemory API.
+"""
 import requests
 
 def translate_text(text: str, target_language: str) -> str:
-    """Translates text to the target language using MyMemory API."""
+    """
+    Translates text to the target language using MyMemory API.
+    
+    Args:
+        text (str): Text to translate.
+        target_language (str): Target language code (e.g., 'es').
+        
+    Returns:
+        str: Translated text or original text on failure.
+    """
     if not text or target_language == 'en':
         return text
         

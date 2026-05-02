@@ -1,12 +1,14 @@
+"""
+Gemini service module for the ElectIQ backend.
+Handles AI generation for chat, quizzes, and facts.
+"""
 import os
 import google.generativeai as genai
 from backend.services.db_service import db_service
+from backend.utils.constants import GEMINI_MODEL_CHAT, GEMINI_MODEL_QUIZ, GEMINI_MODEL_FACT
 
 # Configure Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-
-# Use a standard model
-MODEL_NAME = "gemini-2.5-flash"
 
 SYSTEM_PROMPT = """You are an expert election education assistant named ElectIQ.
 Your goal is to help users understand the election process interactively.
@@ -17,23 +19,26 @@ Format your response in plain text with markdown for bolding/italics, but do NOT
 """
 
 def get_chat_response(email: str, user_message: str) -> str:
-    """Gets a response from Gemini, maintaining conversation history."""
+    """
+    Gets a response from Gemini, maintaining conversation history.
+    
+    Args:
+        email (str): The user's email to fetch chat history.
+        user_message (str): The new prompt from the user.
+        
+    Returns:
+        str: AI generated response.
+    """
     try:
         model = genai.GenerativeModel(
-            model_name=MODEL_NAME,
+            model_name=GEMINI_MODEL_CHAT,
             system_instruction=SYSTEM_PROMPT
         )
         
-        # Retrieve history from DB
         history = db_service.get_chat_history(email)
-        
-        # Start a chat session with the model, providing history
         chat = model.start_chat(history=history)
-        
-        # Send the message
         response = chat.send_message(user_message)
         
-        # Save both user and model message to DB
         db_service.update_chat_history(email, "user", user_message)
         db_service.update_chat_history(email, "model", response.text)
         
@@ -43,7 +48,12 @@ def get_chat_response(email: str, user_message: str) -> str:
         return "I'm sorry, I'm having trouble connecting to my knowledge base right now."
 
 def generate_quiz() -> str:
-    """Generates a 10-question quiz about the election process."""
+    """
+    Generates a 10-question quiz about the election process.
+    
+    Returns:
+        str: JSON formatted array of quiz questions.
+    """
     prompt = """Generate a 10-question interactive quiz about general election processes (registration, voting, counting, etc.).
     Respond ONLY with a raw JSON array of objects. Do not include markdown formatting like ```json or anything else.
     Format exactly like this:
@@ -57,9 +67,8 @@ def generate_quiz() -> str:
     ]
     """
     try:
-        model = genai.GenerativeModel(model_name=MODEL_NAME)
+        model = genai.GenerativeModel(model_name=GEMINI_MODEL_QUIZ)
         response = model.generate_content(prompt)
-        # Strip potential markdown blocks
         text = response.text.strip()
         if text.startswith("```json"):
             text = text[7:]
@@ -71,3 +80,20 @@ def generate_quiz() -> str:
     except Exception as e:
         print(f"Error generating quiz: {e}")
         return "[]"
+
+def generate_fact() -> str:
+    """
+    Generates an interesting Election Fact of the Day.
+    
+    Returns:
+        str: Interesting election fact.
+    """
+    prompt = "Generate exactly one short, fascinating 'Did you know?' fact about the election process or history. Keep it under 2 sentences. Do not use formatting."
+    try:
+        model = genai.GenerativeModel(model_name=GEMINI_MODEL_FACT)
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        print(f"Error generating fact: {e}")
+        return "Did you know? The first US presidential election was held in 1788."
+

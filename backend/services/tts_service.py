@@ -1,9 +1,19 @@
+"""
+Text-To-Speech service module for the ElectIQ backend.
+Handles generation of audio from text via Google Cloud TTS.
+"""
 import base64
 from google.cloud import texttospeech
 
 _tts_client = None
 
-def get_client():
+def get_client() -> texttospeech.TextToSpeechClient:
+    """
+    Get or initialize the Google Cloud TTS client securely.
+    
+    Returns:
+        TextToSpeechClient: Initialized client or None on failure.
+    """
     global _tts_client
     if _tts_client is None:
         try:
@@ -13,7 +23,16 @@ def get_client():
     return _tts_client
 
 def generate_speech(text: str, language_code: str = "en-US") -> str:
-    """Converts text to speech and returns base64 audio content."""
+    """
+    Converts text to speech and returns base64 audio content.
+    
+    Args:
+        text (str): Text to convert to speech.
+        language_code (str): Language code (e.g., 'en-US').
+        
+    Returns:
+        str: Base64 encoded audio string or empty string on failure.
+    """
     client = get_client()
     if not client:
         return ""

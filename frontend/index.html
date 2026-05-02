@@ -12,26 +12,27 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
     
     <!-- Login Overlay -->
-    <div id="login-overlay" class="overlay active">
+    <div id="login-overlay" class="overlay active" role="dialog" aria-modal="true" aria-labelledby="login-title">
         <div class="login-card">
-            <h1>Welcome to ElectIQ</h1>
+            <h1 id="login-title">Welcome to ElectIQ</h1>
             <p>Your personal election process guide.</p>
             <form id="login-form">
                 <label for="email-input">Email Address</label>
-                <input type="email" id="email-input" placeholder="Enter your email to continue" required>
-                <button type="submit" class="btn primary">Start Learning</button>
+                <input type="email" id="email-input" placeholder="Enter your email to continue" required aria-required="true">
+                <button type="submit" class="btn primary" aria-label="Start Learning">Start Learning</button>
             </form>
-            <p id="login-error" class="error-text hidden"></p>
+            <p id="login-error" class="error-text hidden" role="alert" aria-live="assertive"></p>
         </div>
     </div>
 
     <!-- Main Application -->
     <div id="app-container" class="hidden">
-        <header>
-            <div class="logo">
-                <span class="logo-icon">🗳️</span> ElectIQ
+        <header role="banner">
+            <div class="logo" aria-label="ElectIQ Logo">
+                <span class="logo-icon" aria-hidden="true">🗳️</span> ElectIQ
             </div>
             <nav aria-label="Main Navigation">
+                <label for="language-selector" class="sr-only">Select Language</label>
                 <select id="language-selector" aria-label="Select Language">
                     <option value="en">English</option>
                     <option value="hi">Hindi</option>
@@ -40,22 +41,28 @@
                     <option value="te">Telugu</option>
                 </select>
                 <button id="theme-toggle" aria-label="Toggle Dark Mode">🌙</button>
-                <span id="user-email-display" class="user-email"></span>
+                <span id="user-email-display" class="user-email" aria-live="polite"></span>
                 <button id="logout-btn" class="btn outline" aria-label="Logout">Logout</button>
             </nav>
         </header>
 
-        <main id="main-content">
+        <main id="main-content" role="main">
+            <!-- Fact of the Day Section -->
+            <div id="fact-of-the-day" class="fact-banner" aria-live="polite" aria-busy="true">
+                <div class="spinner small"></div> Loading Election Fact of the Day...
+            </div>
+            
             <div class="grid-layout">
                 <!-- Left Column: Chatbot -->
                 <section class="card chat-section" aria-labelledby="chat-heading">
                     <h2 id="chat-heading" data-i18n="chat_heading">AI Election Assistant</h2>
-                    <div id="chat-history" class="chat-history" role="log" aria-live="polite">
+                    <div id="chat-history" class="chat-history" role="log" aria-live="polite" aria-atomic="false">
                         <div class="message model">
                             <p>Hi there! I'm ElectIQ, your election education expert. What would you like to know about the election process?</p>
                         </div>
                     </div>
                     <form id="chat-form" class="chat-input-area">
+                        <label for="chat-input" class="sr-only">Type your message</label>
                         <input type="text" id="chat-input" placeholder="Ask a question..." aria-label="Chat input message" autocomplete="off" required>
                         <button type="submit" class="btn primary" aria-label="Send message">Send</button>
                     </form>
@@ -69,7 +76,7 @@
                         <div class="timeline" id="timeline-container">
                             <!-- Populated by JS -->
                         </div>
-                        <div id="timeline-popup" class="popup hidden" aria-live="assertive">
+                        <div id="timeline-popup" class="popup hidden" aria-live="assertive" role="dialog" aria-labelledby="popup-title">
                             <h3 id="popup-title"></h3>
                             <p id="popup-desc"></p>
                             <button id="close-popup" class="btn small" aria-label="Close popup">Close</button>
@@ -79,48 +86,48 @@
                     <!-- News Section -->
                     <section class="card news-section" aria-labelledby="news-heading">
                         <h2 id="news-heading" data-i18n="news_heading">Latest Election News</h2>
-                        <div id="news-container" class="news-container">
-                            <div class="spinner"></div>
+                        <div id="news-container" class="news-container" aria-live="polite">
+                            <div class="spinner" aria-label="Loading news"></div>
                         </div>
                     </section>
 
                     <!-- Quiz & Checklist Toggle -->
-                    <div class="tabs">
-                        <button class="tab-btn active" data-target="checklist" aria-selected="true" role="tab">Voter Checklist</button>
-                        <button class="tab-btn" data-target="quiz" aria-selected="false" role="tab">Knowledge Quiz</button>
+                    <div class="tabs" role="tablist">
+                        <button class="tab-btn active" data-target="checklist" aria-selected="true" role="tab" id="tab-checklist" aria-controls="checklist-section">Voter Checklist</button>
+                        <button class="tab-btn" data-target="quiz" aria-selected="false" role="tab" id="tab-quiz" aria-controls="quiz-section">Knowledge Quiz</button>
                     </div>
 
                     <!-- Checklist Section -->
-                    <section id="checklist-section" class="card tab-content active" role="tabpanel">
+                    <section id="checklist-section" class="card tab-content active" role="tabpanel" aria-labelledby="tab-checklist">
                         <div id="checklist-container">
                             <!-- Populated by JS -->
                         </div>
                     </section>
 
                     <!-- Quiz Section -->
-                    <section id="quiz-section" class="card tab-content hidden" role="tabpanel">
+                    <section id="quiz-section" class="card tab-content hidden" role="tabpanel" aria-labelledby="tab-quiz">
                         <div id="quiz-intro">
                             <p data-i18n="quiz_desc">Test your knowledge with our 10-question quiz!</p>
-                            <button id="start-quiz-btn" class="btn primary">Start Quiz</button>
+                            <button id="start-quiz-btn" class="btn primary" aria-label="Start the quiz">Start Quiz</button>
                         </div>
-                        <div id="quiz-container" class="hidden">
-                            <div id="quiz-progress">Question <span id="q-num">1</span> of 10</div>
+                        <div id="quiz-container" class="hidden" aria-live="polite">
+                            <div id="quiz-progress" aria-atomic="true">Question <span id="q-num">1</span> of 10</div>
                             <h3 id="quiz-question">Loading...</h3>
-                            <div id="quiz-options" class="quiz-options"></div>
-                            <div id="quiz-feedback" class="hidden"></div>
-                            <button id="next-q-btn" class="btn primary hidden">Next Question</button>
+                            <div id="quiz-options" class="quiz-options" role="radiogroup" aria-labelledby="quiz-question"></div>
+                            <div id="quiz-feedback" class="hidden" role="alert"></div>
+                            <button id="next-q-btn" class="btn primary hidden" aria-label="Next Question">Next Question</button>
                         </div>
-                        <div id="quiz-results" class="hidden">
+                        <div id="quiz-results" class="hidden" aria-live="polite">
                             <h3 data-i18n="quiz_complete">Quiz Complete!</h3>
                             <p>Your Score: <span id="final-score">0</span>/10</p>
-                            <button id="restart-quiz-btn" class="btn outline">Retake Quiz</button>
+                            <button id="restart-quiz-btn" class="btn outline" aria-label="Retake the quiz">Retake Quiz</button>
                         </div>
                     </section>
                 </div>
             </div>
         </main>
         
-        <footer>
+        <footer role="contentinfo">
             <p>&copy; 2026 ElectIQ. Built for Educational Purposes.</p>
         </footer>
     </div>

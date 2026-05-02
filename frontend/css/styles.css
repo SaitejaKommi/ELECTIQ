@@ -508,3 +508,41 @@ footer {
         height: 500px;
     }
 }
+
+/* Fact of the Day Banner */
+.fact-banner {
+    background: var(--primary-light);
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.fact-banner .spinner.small {
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    margin: 0;
+    border-color: rgba(255,255,255,0.3);
+    border-left-color: white;
+}
+
+[data-theme="dark"] .fact-banner {
+    background: var(--primary-dark);
+}
+
+/* Reduced Motion A11y */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+

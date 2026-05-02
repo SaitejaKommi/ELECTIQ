@@ -1,3 +1,7 @@
+/**
+ * Authentication module for handling user login and session management.
+ * Provides basic email-based identification.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const loginOverlay = document.getElementById('login-overlay');
     const appContainer = document.getElementById('app-container');
@@ -13,6 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
         completeLogin(storedEmail);
     }
 
+    /**
+     * Handles the login form submission.
+     * Authenticates the user via the backend API.
+     * @param {Event} e - Form submit event
+     */
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = emailInput.value.trim();
@@ -39,11 +48,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    /**
+     * Handles user logout.
+     * Clears session storage and reloads the page.
+     */
     logoutBtn.addEventListener('click', () => {
         sessionStorage.removeItem('userEmail');
         location.reload(); // Reload to reset state
     });
 
+    /**
+     * Completes the login process and initializes the application UI.
+     * @param {string} email - The authenticated user's email address.
+     */
     function completeLogin(email) {
         loginOverlay.classList.remove('active');
         loginOverlay.classList.add('hidden');
@@ -57,6 +74,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+/**
+ * Retrieves the currently logged-in user's email from session storage.
+ * @returns {string|null} The user's email or null if not logged in.
+ */
 function getUserEmail() {
     return sessionStorage.getItem('userEmail');
 }

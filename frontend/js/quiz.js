@@ -1,3 +1,6 @@
+/**
+ * Application state for the quiz module.
+ */
 let quizData = [];
 let currentQuestionIndex = 0;
 let score = 0;
@@ -12,13 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     nextBtn?.addEventListener('click', loadNextQuestion);
 });
 
+/**
+ * Initializes and starts a new quiz session.
+ * Fetches quiz data from the backend and resets the UI state.
+ */
 async function startQuiz() {
     document.getElementById('quiz-intro').classList.add('hidden');
     document.getElementById('quiz-results').classList.add('hidden');
     
     const container = document.getElementById('quiz-container');
     container.classList.remove('hidden');
-    container.innerHTML = '<div class="spinner"></div><p style="text-align:center;">Generating quiz...</p>';
+    container.innerHTML = '<div class="spinner" aria-label="Loading quiz"></div><p style="text-align:center;">Generating quiz...</p>';
     
     try {
         const response = await fetch(`${API_BASE_URL}/api/quiz/`);
@@ -28,11 +35,11 @@ async function startQuiz() {
         
         // Restore container structure
         container.innerHTML = `
-            <div id="quiz-progress">Question <span id="q-num">1</span> of ${quizData.length}</div>
+            <div id="quiz-progress" aria-atomic="true">Question <span id="q-num">1</span> of ${quizData.length}</div>
             <h3 id="quiz-question"></h3>
-            <div id="quiz-options" class="quiz-options"></div>
-            <div id="quiz-feedback" class="hidden"></div>
-            <button id="next-q-btn" class="btn primary hidden">Next Question</button>
+            <div id="quiz-options" class="quiz-options" role="radiogroup" aria-labelledby="quiz-question"></div>
+            <div id="quiz-feedback" class="hidden" role="alert"></div>
+            <button id="next-q-btn" class="btn primary hidden" aria-label="Next Question">Next Question</button>
         `;
         
         document.getElementById('next-q-btn').addEventListener('click', loadNextQuestion);
@@ -47,10 +54,14 @@ async function startQuiz() {
         }
     } catch (error) {
         console.error(error);
-        container.innerHTML = '<p class="error-text">Failed to load quiz. Please try again.</p><button onclick="startQuiz()" class="btn outline">Retry</button>';
+        container.innerHTML = '<p class="error-text" role="alert">Failed to load quiz. Please try again.</p><button onclick="startQuiz()" class="btn outline">Retry</button>';
     }
 }
 
+/**
+ * Renders the current question and its options.
+ * Handles translations of the question and options.
+ */
 async function renderQuestion() {
     const q = quizData[currentQuestionIndex];
     
@@ -72,16 +83,25 @@ async function renderQuestion() {
         const transOpt = await translateDynamicText(q.options[i], currentLanguage);
         const btn = document.createElement('button');
         btn.className = 'quiz-option';
+        btn.setAttribute('role', 'radio');
+        btn.setAttribute('aria-checked', 'false');
         btn.textContent = transOpt;
         btn.onclick = () => handleAnswer(i, btn);
         optionsContainer.appendChild(btn);
     }
 }
 
+/**
+ * Evaluates the user's selected answer and displays feedback.
+ * @param {number} selectedIndex - The index of the selected option.
+ * @param {HTMLElement} btnElement - The button element that was clicked.
+ */
 async function handleAnswer(selectedIndex, btnElement) {
     // Disable all options
     const options = document.querySelectorAll('.quiz-option');
     options.forEach(opt => opt.disabled = true);
+    
+    btnElement.setAttribute('aria-checked', 'true');
     
     const q = quizData[currentQuestionIndex];
     const isCorrect = selectedIndex === q.correct_index;
@@ -103,6 +123,9 @@ async function handleAnswer(selectedIndex, btnElement) {
     document.getElementById('next-q-btn').classList.remove('hidden');
 }
 
+/**
+ * Advances to the next question or shows the final results.
+ */
 async function loadNextQuestion() {
     currentQuestionIndex++;
     if (currentQuestionIndex < quizData.length) {
@@ -112,6 +135,9 @@ async function loadNextQuestion() {
     }
 }
 
+/**
+ * Displays the final score and saves it to the backend database.
+ */
 async function showResults() {
     document.getElementById('quiz-container').classList.add('hidden');
     document.getElementById('quiz-results').classList.remove('hidden');

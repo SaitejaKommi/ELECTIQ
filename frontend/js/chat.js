@@ -1,10 +1,20 @@
+/**
+ * Main chat interface module.
+ * Handles user interactions, message sending, debouncing,
+ * and text-to-speech functionality.
+ */
 document.addEventListener('DOMContentLoaded', () => {
     const chatForm = document.getElementById('chat-form');
     const chatInput = document.getElementById('chat-input');
     const chatHistory = document.getElementById('chat-history');
 
+    /** @type {number} Timer for debouncing chat inputs */
     let debounceTimer;
 
+    /**
+     * Handles the chat form submission with a debounce to prevent spam.
+     * @param {Event} e - Form submit event
+     */
     chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
         
@@ -19,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     });
 
+    /**
+     * Sends the user's message to the backend and updates the UI.
+     * Handles translation of the AI response if a different language is selected.
+     * @param {string} message - User's chat message
+     */
     async function sendMessage(message) {
         const email = getUserEmail();
         if (!email) return;
@@ -28,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Add loading indicator
         const loadingId = 'loading-' + Date.now();
-        addMessageToUI('model', '<div class="spinner" style="width:20px;height:20px;margin:0;"></div>', loadingId);
+        addMessageToUI('model', '<div class="spinner small" style="width:20px;height:20px;margin:0;" aria-label="Loading response"></div>', loadingId);
 
         try {
             const response = await fetch(`${API_BASE_URL}/api/chat/`, {
@@ -55,6 +70,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * Appends a new message element to the chat history.
+     * @param {string} role - 'user' or 'model'
+     * @param {string} htmlContent - Formatted HTML content
+     * @param {string|null} [id=null] - Optional element ID
+     */
     function addMessageToUI(role, htmlContent, id = null) {
         const msgDiv = document.createElement('div');
         msgDiv.className = `message ${role}`;
@@ -64,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (role === 'model' && !htmlContent.includes('spinner')) {
             msgDiv.innerHTML = `
                 <div>${htmlContent}</div>
-                <button class="tts-btn" aria-label="Listen" onclick="playTTS(this.previousElementSibling.innerText)">🔊</button>
+                <button class="tts-btn" aria-label="Listen to this message" onclick="playTTS(this.previousElementSibling.innerText)">🔊</button>
             `;
         } else {
             msgDiv.innerHTML = `<div>${htmlContent}</div>`;
@@ -74,8 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
         chatHistory.scrollTop = chatHistory.scrollHeight;
     }
 
+    /**
+     * Formats basic markdown in the AI response into HTML.
+     * @param {string} text - Raw text from AI
+     * @returns {string} HTML formatted string
+     */
     function formatResponse(text) {
-        // Very basic markdown parsing for bold text
         return text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                    .replace(/\n/g, '<br>');
     }
@@ -84,6 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
 let synth = window.speechSynthesis;
 let currentUtterance = null;
 
+/**
+ * Uses the Web Speech API to read text aloud.
+ * Acts as a toggle (cancels speaking if already speaking).
+ * @param {string} text - The text to speak.
+ */
 async function playTTS(text) {
     if (synth.speaking) {
         synth.cancel();
