@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.tts_service import generate_speech
+from backend.services.tts_service import generate_speech
 
 tts_bp = Blueprint('tts', __name__)
 

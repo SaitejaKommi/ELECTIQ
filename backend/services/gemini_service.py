@@ -1,6 +1,6 @@
 import os
 import google.generativeai as genai
-from services.db_service import db_service
+from backend.services.db_service import db_service
 
 # Configure Gemini API
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))

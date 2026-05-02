@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from services.db_service import db_service
-from utils.sanitizer import sanitize_input, is_valid_email
+from backend.services.db_service import db_service
+from backend.utils.sanitizer import sanitize_input, is_valid_email
 
 auth_bp = Blueprint('auth', __name__)
 

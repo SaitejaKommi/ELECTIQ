@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
-from services.gemini_service import generate_quiz
-from services.db_service import db_service
+from backend.services.gemini_service import generate_quiz
+from backend.services.db_service import db_service
 import json
 
 quiz_bp = Blueprint('quiz', __name__)

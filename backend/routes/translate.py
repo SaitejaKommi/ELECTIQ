@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from services.translate_service import translate_text
+from backend.services.translate_service import translate_text
 
 translate_bp = Blueprint('translate', __name__)
 

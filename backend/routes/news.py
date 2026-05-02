@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
-from services.search_service import fetch_election_news
-from utils.cache import cache
+from backend.services.search_service import fetch_election_news
+from backend.utils.cache import cache
 
 news_bp = Blueprint('news', __name__)
 

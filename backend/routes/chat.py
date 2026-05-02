@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from services.gemini_service import get_chat_response
-from utils.sanitizer import sanitize_input
-from utils.rate_limiter import limiter
+from backend.services.gemini_service import get_chat_response
+from backend.utils.sanitizer import sanitize_input
+from backend.utils.rate_limiter import limiter
 
 chat_bp = Blueprint('chat', __name__)
 

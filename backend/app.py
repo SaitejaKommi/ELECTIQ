@@ -8,13 +8,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Import routes
-from routes.chat import chat_bp
-from routes.quiz import quiz_bp
-from routes.news import news_bp
-from routes.translate import translate_bp
-from routes.auth import auth_bp
-from utils.rate_limiter import limiter
-from utils.cache import cache
+from backend.routes.chat import chat_bp
+from backend.routes.quiz import quiz_bp
+from backend.routes.news import news_bp
+from backend.routes.translate import translate_bp
+from backend.routes.auth import auth_bp
+from backend.utils.rate_limiter import limiter
+from backend.utils.cache import cache
 
 def create_app(test_config=None):
     app = Flask(__name__, static_folder="../frontend")
