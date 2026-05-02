@@ -1,1 +1,1 @@
-const API_BASE_URL = "RENDER_BACKEND_URL_HERE";
+const API_BASE_URL = "";
